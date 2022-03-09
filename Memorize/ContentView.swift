@@ -8,14 +8,19 @@
 import SwiftUI
 
 struct ContentView: View {
-    var emojis = ["🚂", "🚀", "🚁", "🚜", "🚲", "🚗", "🚌", "🚐", "🛴", "🚝", "🛳", "🛸", "🚒", "🚙", "🏍", "🛰", "⛵️"]
+    var vehicleEmojis = ["🚂", "🚀", "🚁", "🚜", "🚲", "🚗", "🚌", "🚐", "🛴", "🚝", "🛳", "🛸", "🚒", "🚙", "🏍", "🛰", "⛵️"]
+    //var foodEmojis = ["🥐", "🥯", "🍞", "🥖", "🍳", "🥞", "🧇", "🥓", "🍗", "🍔"]
+    //var animalEmojis = ["🐅", "🐆", "🦓", "🦍", "🦧", "🦣", "🐘", "🦛", "🦏", "🐪"]
+    
     @State var emojiCount = 6
     
     var body: some View {
         VStack {
+            Text("Memorize!").font(.largeTitle)
+            
             ScrollView {
                 LazyVGrid(columns: [GridItem(.adaptive(minimum: 65))]) {
-                    ForEach(emojis[0..<emojiCount], id: \.self) { emoji in
+                    ForEach(vehicleEmojis[0..<emojiCount], id: \.self) { emoji in
                         CardView(content: emoji)
                             .aspectRatio(2/3, contentMode: .fit)
                     }
@@ -26,9 +31,13 @@ struct ContentView: View {
             Spacer()
             
             HStack {
-                removeButton
                 Spacer()
-                addButton
+                vehicleThemeButton
+                Spacer()
+                //foodThemeButton
+                Spacer()
+                //animalThemeButton
+                Spacer()
             }
             .font(.largeTitle)
             .padding(.horizontal)
@@ -37,25 +46,38 @@ struct ContentView: View {
         .padding(.horizontal)
     }
     
-    var removeButton: some View {
+    var vehicleThemeButton: some View {
         Button {
-            if emojiCount > 1 {
-                emojiCount -= 1
-            }
+
         } label: {
-            Image(systemName: "minus.circle")
+            VStack {
+                Image(systemName: "car")
+                Text("Vehicles").font(.body)
+            }
         }
     }
     
-    var addButton: some View {
-        Button {
-            if emojiCount < emojis.count {
-                emojiCount += 1
-            }
-        } label: {
-            Image(systemName: "plus.circle")
-        }
-    }
+//    var foodThemeButton: some View {
+//        Button {
+//
+//        } label: {
+//            VStack {
+//                Image(systemName: "fork.knife")
+//                Text("Food").font(.body)
+//            }
+//        }
+//    }
+    
+//    var animalThemeButton: some View {
+//        Button {
+//
+//        } label: {
+//            VStack {
+//                Image(systemName: "pawprint")
+//                Text("Animals").font(.body)
+//            }
+//        }
+//    }
 }
 
 struct CardView: View {
@@ -83,7 +105,7 @@ struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         ContentView()
             .preferredColorScheme(.light)
-.previewInterfaceOrientation(.portraitUpsideDown)
+.previewInterfaceOrientation(.portrait)
         ContentView()
             .preferredColorScheme(.dark)
     }
