@@ -8,11 +8,7 @@
 import SwiftUI
 
 struct ContentView: View {
-    var vehicleEmojis = ["🚂", "🚀", "🚁", "🚜", "🚲", "🚗", "🚌", "🚐", "🛴", "🚝", "🛳", "🛸", "🚒", "🚙", "🏍", "🛰", "⛵️"]
-    //var foodEmojis = ["🥐", "🥯", "🍞", "🥖", "🍳", "🥞", "🧇", "🥓", "🍗", "🍔"]
-    //var animalEmojis = ["🐅", "🐆", "🦓", "🦍", "🦧", "🦣", "🐘", "🦛", "🦏", "🐪"]
-    
-    @State var emojiCount = 6
+    @ObservedObject var viewModel: EmojiMemoryGame
     
     var body: some View {
         VStack {
@@ -20,93 +16,48 @@ struct ContentView: View {
             
             ScrollView {
                 LazyVGrid(columns: [GridItem(.adaptive(minimum: 65))]) {
-                    ForEach(vehicleEmojis[0..<emojiCount], id: \.self) { emoji in
-                        CardView(content: emoji)
+                    ForEach(viewModel.cards) { card in
+                        CardView(card: card)
                             .aspectRatio(2/3, contentMode: .fit)
+                            .onTapGesture {
+                                viewModel.choose(card)
+                            }
                     }
                 }
             }
             .foregroundColor(/*@START_MENU_TOKEN@*/.red/*@END_MENU_TOKEN@*/)
-            
-            Spacer()
-            
-            HStack {
-                Spacer()
-                vehicleThemeButton
-                Spacer()
-                //foodThemeButton
-                Spacer()
-                //animalThemeButton
-                Spacer()
-            }
-            .font(.largeTitle)
-            .padding(.horizontal)
-            
         }
         .padding(.horizontal)
     }
-    
-    var vehicleThemeButton: some View {
-        Button {
-
-        } label: {
-            VStack {
-                Image(systemName: "car")
-                Text("Vehicles").font(.body)
-            }
-        }
-    }
-    
-//    var foodThemeButton: some View {
-//        Button {
-//
-//        } label: {
-//            VStack {
-//                Image(systemName: "fork.knife")
-//                Text("Food").font(.body)
-//            }
-//        }
-//    }
-    
-//    var animalThemeButton: some View {
-//        Button {
-//
-//        } label: {
-//            VStack {
-//                Image(systemName: "pawprint")
-//                Text("Animals").font(.body)
-//            }
-//        }
-//    }
 }
 
 struct CardView: View {
-    var content: String
-    @State var isFaceUp: Bool = true
+    let card: MemoryGame<String>.Card
     
     var body: some View {
         ZStack {
             let shape = RoundedRectangle(cornerRadius: 25.0)
-            if isFaceUp {
+            if card.isFaceUp {
                 shape.fill().foregroundColor(.white)
                 shape.strokeBorder(lineWidth: 3)
-                Text(content).font(.largeTitle)
+                Text(card.content).font(.largeTitle)
+            } else if card.isMatched {
+                shape.opacity(0)
             } else {
                 shape.fill()
             }
-        }
-        .onTapGesture {
-            isFaceUp = !isFaceUp
         }
     }
 }
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView()
+        let game = EmojiMemoryGame()
+        
+        ContentView(viewModel: game)
             .preferredColorScheme(.light)
 .previewInterfaceOrientation(.portrait)
-        ContentView()
+        ContentView(viewModel: game)
             .preferredColorScheme(.dark)
     }
 }
